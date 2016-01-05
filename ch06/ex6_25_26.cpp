@@ -1,4 +1,4 @@
-//! @Alan
+//! @Yue Wang
 //!
 //! Exercise 6.25: Write a main function that takes two arguments.
 //! Concatenate the supplied arguments and print the resulting string.
@@ -7,16 +7,13 @@
 //! in this section. Print the values of the arguments passed to main.
 //!
 
-
-
 #include <iostream>
 #include <string>
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     std::string str;
-    for (int i = 1; i != argc; ++i)
-    {
+    for (int i = 1; i != argc; ++i) {
         str += argv[i];
         str += " ";
     }

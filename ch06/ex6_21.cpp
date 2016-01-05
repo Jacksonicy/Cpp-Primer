@@ -7,9 +7,9 @@
 //!
 
 #include <iostream>
-using std::cout; 
+using std::cout;
 
-int LargerOne(const int i, const int *ip)
+int LargerOne(const int i, const int* ip)
 {
     return (i > *ip) ? i : *ip;
 }
@@ -21,5 +21,3 @@ int main()
 
     return 0;
 }
-
-

@@ -1,26 +1,21 @@
 ﻿# Chapter 9. Sequential Containers
 
 ## Exercise 9.1:
->Which is the most appropriate—a vector, a deque, or a list—for the following program tasks?
-Explain the rationale for your choice.
-If there is no reason to prefer one or another container, explain why not.
+>Which is the most appropriate—a vector, a deque, or a list—for the following program tasks?Explain the rationale for your choice.If there is no reason to prefer one or another container, explain why not.
 
 >- (a) Read a fixed number of words, inserting them in the container alphabetically as they are entered. We’ll see in the next chapter that associative containers are better suited to this problem.
 >- (b) Read an unknown number of words. Always insert new words at the back. Remove the next value from the front.
 >- (c) Read an unknown number of integers from a file. Sort the numbers and then print them to standard output.
 
 - (a) `std::set` is the best. now, we can select `vector` or `deque`, better than `list`, cause we don't need insert or delete elements in the middle.
-- (b) `deque`.
->If the program needs to insert or delete elements at the front and the back, but not in the middle, use a deque
-- (c) `vector`, no need that insert or delete at the front or back. and
->If your program has lots of small elements and space overhead matters, don’t
-use list or forward_list.
+- (b) `deque`. If the program needs to insert or delete elements at the front and the back, but not in the middle, use a deque
+- (c) `vector`, no need that insert or delete at the front or back. and If your program has lots of small elements and space overhead matters, don’t use list or forward_list.
 
 ## Exercise 9.2:
 >Define a list that holds elements that are deques that hold ints.
 
 ```cpp
-std::list<std::deques<int>> ldi;
+std::list<std::deque<int>> ldi;
 ```
 
 ## Exercise 9.3:
@@ -60,14 +55,15 @@ vector<int>::iterator find(vector<int>::iterator beg, vector<int>::iterator end,
 ```cpp
 list<int> lst1;
 list<int>::iterator iter1 = lst1.begin(), iter2 = lst1.end();
-while (iter1 < iter2) /*ERROR: operator< cannot be used in list*/
+while (iter1 < iter2) /*ERROR: operator< can't be applied to iterator for list*/
 ```
 
 Fixed:
 ```cpp
 while(iter1 != iter2)
 ```
-
+#### note:
+operator `<` can be used in `list`,but can't be applied to iterator for `list`.
 ## Exercise 9.7:
 >What type should be used as the index into a vector of ints?
 
@@ -129,7 +125,23 @@ vector<int> vec(other_vec.begin(), other_vec.end()); // same as other_vec
 ## Exercise 9.12:
 >Explain the differences between the constructor that takes a container to copy and the constructor that takes two iterators.
 
-we can use the constructor that takes two iterators to copy a **subsequence** of a container. But the constructor that takes a container to copy should copy whole container.
+- The constructor that takes another container as an argument (excepting array) assumes the container type and element type of both containers are identical. It will also copy all the elements of the received container into the new one:
+```cpp
+list<int> numbers = {1, 2, 3, 4, 5};
+list<int> numbers2(numbers);        // ok, numbers2 has the same elements as numbers
+vector<int> numbers3(numbers);      // error: no matching function for call...
+list<double> numbers4(numbers);     // error: no matching function for call...
+```
+- The constructor that takes two iterators as arguments does not require the container types to be identical. Moreover, the element types in the new and original containers can differ as long as it is possible to convert the elements we’re copying to the element type of the container we are initializing.
+It will also copy only the object delimited by the received iterators.
+```cpp
+list<int> numbers = {1, 2, 3, 4, 5};
+list<int> numbers2(numbers.begin(), numbers.end);        // ok, numbers2 has the same elements as numbers
+vector<int> numbers3(numbers.begin(), --numbers.end());  // ok, numbers3 is {1, 2, 3, 4}
+list<double> numbers4(++numbers.beg(), --numbers.end());        // ok, numbers4 is {2, 3, 4}
+forward_list<float> numbers5(numbers.begin(), numbers.end());   // ok, number5 is {1, 2, 3, 4, 5}
+```
+
 
 ## [Exercise 9.13](ex9_13.cpp)
 ## [Exercise 9.14](ex9_14.cpp)
@@ -139,8 +151,8 @@ we can use the constructor that takes two iterators to copy a **subsequence** of
 ## Exercise 9.17:
 >Assuming c1 and c2 are containers, what (if any) constraints does the following usage place on the types of c1 and c2?
 
-First, ther must be the identical container and same type holded.
-Second,the type holded must support relational operation. (@Mooophy)
+First, there must be the identical container and same type holded.
+Second,the type held must support relational operation. (@Mooophy)
 
 Both c1 and c2 are the containers except the unordered associative containers.(@pezy)
 
@@ -170,22 +182,7 @@ while (iter != mid)
 
 **FIXED**:
 
-```cpp
-// cause the reallocation will lead the iterators and references
-// after the insertion point to invalid. Thus, we need to call reserver at first.
-
-vector<int> iv = {0,1,2,3,4,5,6,7,8,9}; // For example.
-iv.reserver(25); // make sure that enough
-
-vector<int>::iterator iter = iv.begin(), mid = iv.begin() + iv.size()/2;
-while (iter != mid)
-    if (*mid == some_val)
-        mid = iv.insert(mid, 2 * some_val);
-    else
-        --mid;
-```
-
-The complete test codes, check [this](ex9_22.cpp).
+check [this](ex9_22.cpp).
 
 ## Exercise 9.23:
 >In the first program in this section on page 346, what would
@@ -212,16 +209,18 @@ if both elem1 and elem2 are the off-the-end iterator, nothing happened too.
 >Write a function that takes a forward_list<string> and two additional string arguments. The function should find the first string and insert the second immediately following the first. If the first string is not found, then insert the second string at the end of the list.
 
 ```cpp
-void insert(forward_list<string> &flst, string find, string insrt)
+void find_and_insert(forward_list<string> &list, string const& to_find, string const& to_add)
 {
-    auto prev = flst.before_begin();
-    for (auto curr = flst.begin(); curr != flst.end(); prev = curr++)
-        if (*curr == find)
+    auto prev = list.before_begin();
+    for (auto curr = list.begin(); curr != list.end(); prev = curr++)
+    {
+        if (*curr == to_find)
         {
-            flst.insert_after(curr, insrt);
+            list.insert_after(curr, to_add);
             return;
         }
-    flst.insert_after(prev, insrt);
+    }
+    list.insert_after(prev, to_add);
 }
 ```
 
@@ -230,7 +229,7 @@ void insert(forward_list<string> &flst, string find, string insrt)
 vec.resize(100) do? What if we next wrote vec.resize(10)?
 
 ```cpp
-vec.resize(100);    // adds 75 elements of value 0 to the back of vec
+vec.resize(100);    // adds 75 items to the back of vec. These added items are value initialized.
 vec.resize(10);     // erases 90 elements from the back of vec
 ```
 
@@ -269,12 +268,16 @@ cannot.
 >Explain what the following program fragment does:
 ```cpp
 vector<string> svec;
-svec.reserve(1024);     // sets capacity to at least 1024
+svec.reserve(1024);
 string word;
-while (cin >> word)     // input word continually
+while (cin >> word)
     svec.push_back(word);
-svec.resize(svec.size()+svec.size()/2); // sets capacity to at least 3/2's size. may do nothing.
+svec.resize(svec.size()+svec.size()/2);
 ```
+
+The `while` loop will read words from `cin` and store them in out vector. Even if we initially reserved 1024 elements, if there are more words read from `cin`, our vector's capacity will be automatically increased (most implementations will double the previous capacity) to accommodate them.
+
+And now comes the catch. `resize()` is different from `reserve()`. In this case `resize()` will add another `svec.size()/2` value initialized elements to `svec`. If this exceeds `svec.capacity()` it will also automatically increase it to accommodate the new elements.
 
 ## Exercise 9.40:
 >If the program in the previous exercise reads 256 words, what is its likely capacity after it is resized? What if it reads 512? 1,000? 1,048?

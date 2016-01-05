@@ -1,14 +1,14 @@
-##Exercise 3.1 : [part1](ex3_1a.cpp) | [part2](ex3_1b.cpp)
-##Exercise 3.2 : [part1](ex3_2a.cpp) | [part2](ex3_2b.cpp)
+##Exercise 3.1 : [part1](ex3_01a.cpp) | [part2](ex3_01b.cpp)
+##Exercise 3.2 : [part1](ex3_02a.cpp) | [part2](ex3_02b.cpp)
 ##Exercise 3.3
 >Explain how whitespace characters are handled in the string
-input operator and in the getline function.
+input operator and in the `getline` function.
 
 The `getline` function takes an input stream and a string.
 This function reads the given stream up to and including
 the first newline and stores what it read—not including
 the newline—in its string argument.
-After getline sees a newline, even if it is the first character in the input,
+After `getline` sees a newline, even if it is the first character in the input,
 it stops reading and returns.
 If the first character in the input is a newline,
 then the resulting string is the empty string.
@@ -22,9 +22,9 @@ read to termination and discard newline
 
 [Read more](http://www.cplusplus.com/reference/string/string/getline/)
 
-##Exercise 3.4 : [part1](ex3_4a.cpp) | [part2](ex3_4b.cpp)
-##Exercise 3.5 : [part1](ex3_5a.cpp) | [part2](ex3_5b.cpp)
-##[Exercise 3.6](ex3_6.cpp)
+##Exercise 3.4 : [part1](ex3_04a.cpp) | [part2](ex3_04b.cpp)
+##Exercise 3.5 : [part1](ex3_05a.cpp) | [part2](ex3_05b.cpp)
+##[Exercise 3.6](ex3_06.cpp)
 ##Exercise 3.7
 >What would happen if you define the loop control variable in the previous
 exercise as type char? Predict the results and then change your program
@@ -37,7 +37,7 @@ No different.
 We use `auto` to let the compiler determine the type of `c`.
 which in this case will be `char&`.
 
-##[Exercise 3.8](ex3_8.cpp)
+##[Exercise 3.8](ex3_08.cpp)
 ##Exercise 3.9
 >What does the following program do? Is it valid? If not, why not?
 ```cpp
@@ -45,10 +45,7 @@ string s;
 cout << s[0] << endl;
 ```
 
-invalid in theory, but the compiler passes.
-
-`s` is empty, so `s[0]` is undefined. But the compiler always define `s[0]`
-with `\0`, so you can use `s[0]` in the `cout`.
+Try to get the first element of the `string`. It is invalid, cause this is **undefined behavior**.
 
 ##[Exercise 3.10](ex3_10.cpp)
 ##Exercise 3.11
@@ -97,7 +94,7 @@ vector<string> v7{10, "hi"};  // size:10, value:"hi"
 ##[Exercise 3.18](ex3_18.cpp)
 ##[Exercise 3.19](ex3_19.cpp)
 ##[Exercise 3.20](ex3_20.cpp)
-##[Exercise 3.21](ex3_21.cpp) ([Generics Version](ex3_21_generics_version))
+##[Exercise 3.21](ex3_21.cpp)
 ##[Exercise 3.22](ex3_22.cpp)
 ##[Exercise 3.23](ex3_23.cpp)
 ##[Exercise 3.24](ex3_24.cpp)
@@ -142,7 +139,7 @@ please see 2.2.1. Variable Definitions -> Default Initialization.
 
 `std::string` isn't a build-in type. The initializer will set it empty.
 `ia` and `ia2` are build-type. But `ia` isn't in the function body, so it
-will be initalized to **zero**. `ia2` is in the function body. so it's
+will be initialized to **zero**. `ia2` is in the function body. so it's
 value is **undefined**.
 
 You can also use gdb to debug the value when the code is running.
@@ -151,10 +148,7 @@ You can also use gdb to debug the value when the code is running.
 >List some of the drawbacks of using an array instead of a vector.
 
 1. can't add elements to an array.
-2. can't use auto to deduce the type from a list of initalizers.
-3. no arrays of references.
-4. can't use template and iterator.
-5. vector have lots of useful methods and algorithms.
+2. vector is better supported bt std.
 
 ##Exercise 3.30
 >Identify the indexing errors in the following code:
@@ -228,7 +222,7 @@ The code will print "helloworld" when you run it.
 because the character list in the `.rodata` like this:  
 
     h e l l o w o r l d \0  
-`While(*cp)` judge wether *cp is 0 or not. when *cp is not 0, it will print the character until 0.  
+`While(*cp)` judge weather *cp is 0 or not. when *cp is not 0, it will print the character until 0.  
 When you change the code like this:  
 
     const char ca[] = {'h', 'e', 'l', 'l', 'o', '\0'};  
